@@ -2,7 +2,7 @@
 
 You're going to recreate some of the functionality of the popular JS library Underscore.js.  Write all of the following methods inside of an `_` object. Run `jasmine` to see the tests fail and write the code necessary to make the tests pass.
 
-**Fork this repo, push your code to your fork**
+
 
 * average - returns the average value in a given array
 
