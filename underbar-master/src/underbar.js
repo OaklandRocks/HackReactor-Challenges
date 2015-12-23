@@ -175,6 +175,9 @@
     // map() is a useful primitive iteration function that works a lot
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
+    var mapped = [];
+       _.each(collection, function(item){ mapped.push(iterator(item)) });
+       return mapped;
   };
 
   /*
@@ -246,12 +249,31 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    iterator = iterator || _.identity;
+
+        return _.reduce(collection, function(wasFound, item) {
+          if (!wasFound) return false;
+          return iterator(item) ? true : false;
+        }, true);
+// http://stackoverflow.com/questions/24298493/how-to-re-write-every-all-from-underscore-js-using-reduce-and-each
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    if (iterator === undefined) {
+          iterator = _.identity;
+        }
+
+        return ! (_.every(collection, function(item) {
+          if (iterator(item)) {
+            return false;
+          } else {
+            return true;
+          }
+        }));
+        // http://stackoverflow.com/questions/18157348/how-to-solve-some-using-every?rq=1
   };
 
 
