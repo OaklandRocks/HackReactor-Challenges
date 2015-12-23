@@ -4,21 +4,24 @@
   <head>
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+    <!--script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment-with-locales.min.js"></script-->
   </head>
+  <div class="content">
   <body>
     <script>
       $(document).ready(function(){
-        var $body = $('body');
-        $body.html('');
+        var $content = $('.content');
+        $content.html('');
         var index = streams.home.length - 1;
         while(index >= 0){
           var tweet = streams.home[index];
           var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
+          $tweet.text('@' + tweet.user + ': ' + tweet.message + tweet.created_at);
+          $tweet.appendTo($content);
           index -= 1;
         }
       });
     </script>
+    </div>
   </body>
 </html>
