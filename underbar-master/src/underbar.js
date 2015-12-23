@@ -307,6 +307,14 @@
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    for(var i = 1; i < arguments.length; i++){
+          _.each(arguments[i], function(item, prop){
+            if (!(prop in obj)){
+              obj[prop] = item;
+            }
+          });
+        }
+        return obj;
   };
 
 
@@ -341,7 +349,7 @@
     };
   };
 
-  // Memorize an expensive function's results by storing them. You may assume
+  // Memoize an expensive function's results by storing them. You may assume
   // that the function takes only one argument and that it is a primitive.
   // memoize could be renamed to oncePerUniqueArgumentList; memoize does the
   // same thing as once, but based on many sets of unique arguments.
@@ -350,6 +358,15 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    var allReadyComputed = {};
+
+    return function() {
+      if (!allReadyComputed[arguments[0]]) {
+        allReadyComputed[arguments[0]] = func.apply(this, arguments);
+      }
+      return allReadyComputed[arguments[0]];
+    };
+  // http://stackoverflow.com/questions/31977069/memoize-arguments-as-keys
   };
 
   // Delays a function for the given number of milliseconds, and then calls
