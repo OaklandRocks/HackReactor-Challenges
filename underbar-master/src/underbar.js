@@ -230,6 +230,7 @@
     });
 
     return accumulator;
+    // http://stackoverflow.com/questions/30277593/how-to-re-create-underscore-js-reduce-method?rq=1
 
   };
 
@@ -419,7 +420,29 @@
 
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
+  // method.call( newThisContext, Param1, ..., Param N )
+  // method.apply( newThisContext, [ Param1, ..., Param N ] );
   _.invoke = function(collection, functionOrKey, args) {
+      if(typeof functionOrKey === 'string'){
+       return _.map(collection, function(item, key){
+          return item[functionOrKey].apply(item,args);
+       });
+      } else {
+        return _.map(collection, function(item, key){
+
+          return functionOrKey.call(item);
+        });
+      }
+    // http://stackoverflow.com/questions/24835704/creating-invoke-from-scratch-why-does-function-work-but-method-returns-undef
+    // if(typeof(functionOrKey) === "function"){
+    //     return _.map(collection, function(item){
+    //       return functionOrKey.apply(item, args);
+    //     });
+    //   } else {
+    //     return _.map(collection, function(item){
+    //       return item[functionOrKey].apply(item, args);
+    //     });
+    //   }
   };
 
   // Sort the object's values by a criterion produced by an iterator.
@@ -427,6 +450,12 @@
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
+    if(typeof(iterator) === 'function') {
+         return collection.sort(function(a,b) {return iterator(a)-iterator(b)});
+       } else {
+         return collection.sort(function(a,b) {return a[iterator]-b[iterator]});
+       }
+   // http://stackoverflow.com/questions/1129216/sort-array-of-objects-by-string-property-value-in-javascript
   };
 
   // Zip together two or more arrays with elements of the same index
@@ -435,6 +464,17 @@
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function() {
+     var results = [];
+     var maxLength = _.reduce(arguments, function(a, b) { return a > b.length ? a : b.length }, 0)
+     for (var i = 0; i < arguments.length; i++) {
+       var tempArray = [];
+       for (var j = 0; j < maxLength; j++) {
+         tempArray.push(arguments[j][i]);
+       }
+       results.push(tempArray);
+     }
+     return results;
+     // http://stackoverflow.com/questions/31682736/rebuilding-zip-in-javascript-using-map-arbitrary-arguments
   };
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
@@ -442,16 +482,40 @@
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
+      result = result || [];
+        _.each(nestedArray, function(item) {
+          if(Array.isArray(item)) {
+            _.flatten(item, result);
+          } else {
+            result.push(item);
+          }
+        });
+        return result;
+
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
+      var args = _.map(arguments, function(item){
+        return item;
+      });
+      return _.filter(args[0], function(item){
+        return _.every(args, function(array){
+          return _.contains(array,item);
+        });
+      });
   };
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
+    var arrays = [].slice.call(arguments, 1);
+    return _.filter(array, function(value) {
+      return !_.some(arrays, function(array) {
+        return _.contains(array, value);
+      });
+    });
   };
 
   // Returns a function, that, when invoked, will only be triggered at most once
