@@ -367,6 +367,7 @@
       return allReadyComputed[arguments[0]];
     };
   // http://stackoverflow.com/questions/31977069/memoize-arguments-as-keys
+  // http://stackoverflow.com/questions/24486856/how-underscore-memoize-is-implemented-in-javascript
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -376,6 +377,14 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    var args = [].splice.call(arguments, 2);
+
+       var delayedFunction = function() {
+         return func.apply(this, args);
+       };
+
+       setTimeout(delayedFunction, arguments[1]);
+       // http://stackoverflow.com/questions/10312963/javascript-settimeout
   };
 
 
