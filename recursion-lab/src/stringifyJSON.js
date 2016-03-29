@@ -17,13 +17,26 @@ var stringifyJSON = function(obj) {
   if (obj === null) {
     return 'null';
   }
-  if(Array.isArray(obj) && (obj.length === 0)){
-      return '[]';
-  } else {
+  if(Array.isArray(obj)) {
     var results =[]
     for (var i=0; i<obj.length; i++) {
       results.push(stringifyJSON(obj[i]));
     }
     return "[" + results.join(',') + "]" ;
   }
+  // non array objects
+  if(typeof obj === "object") {
+     var results = [];
+     for (var prop in obj) {
+      var key = stringifyJSON(prop);
+      var value = stringifyJSON(obj[prop]);
+       if(typeof value !== "undefined"){
+         results.push(key + ":" + value);
+       }
+     }
+     return "{" + results.join(",") + "}";
+   }
+   if (typeof obj === undefined || typeof obj === "function") {
+        return undefined;
+   }
 };
