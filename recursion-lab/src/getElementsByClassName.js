@@ -7,4 +7,17 @@
 var getElementsByClassName = function(className
 ){
   // your code here
+  var nodes = [];
+  var recursiveSearch = function(element) {
+    var target = element.className.split(' ');
+    if(target.indexOf(className) !== -1) {
+      nodes.push(element);
+    }
+    for(var i =0; i<element.children.length; i++) {
+      recursiveSearch(element.children[i]);
+    }
+  };
+  recursiveSearch(document.body);
+  return nodes;
+
 };
